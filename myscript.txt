@@ -1,0 +1,574 @@
+ng add @angular/material
+-->Indigo/Pink
+-->Yes
+-->Yes
+
+npm i highcharts-angular --save
+npm i highcharts --save
+npm i @angular/cdk --save
+
+
+npm i @angular/flex-layout
+Jako bitno u json zameni verzije!! na ovo sto ti pise. Ne moze 9ka sa angular v8
+"@angular/flex-layout": "^8.0.0-beta.27"
+
+U app.module.ts dodas
+import { MatButtonModule } from "@angular/material/button";
+
+imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatButtonModule
+  ],
+
+Automacki ti se adduje
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+itd u css...
+
+
+LAYOUT DEFINITION
+ng g c layouts/default
+ng g m layouts/default - Ovo ce ti biti sad glavni modul za dafault layout.
+ng g c modules/dashboard
+
+Kreirao je route
+Svaka ruta ima
+{
+  path:...
+  component:...
+}
+Primer:
+const routes: Routes = [{
+  path: '',
+  component: DefaultComponent,
+  children: [{
+      path: '',
+      component: DashboardComponent
+    }]
+}];
+
+Zatim smo na komponentu default dodali dashboard
+U defualt.module.ts smo importovali RouterModuel
+A default.html <router-outlet></router-outlet>
+
+SHARED MODULES
+default.html smo dodali header i footer.
+I sad pravimo header, footer, sidebar
+ng g c shared/components/header
+ng g c shared/components/footer
+ng g c shared/components/siderbar
+da bi ih shaovali treba nam i module
+ng g m shared
+
+dodao je novu stranu u modules
+ng g c modules/posts
+I nju je izbrisao iz app.modules.ts i dodao je u default jer tu redjas stanice.
+I nju je registrovao kao dete u app-routering.module
+Sad nam je posts ../posts a dashboard /
+
+Sada je
+1.default.module.ts importovao SharedModule:
+  imports: [
+    ...,
+    SharedModule
+  ]
+2.U shared.module DEKLARISAO i EKSPORTOVAO sve tri komponente:
+ declarations: [
+    HeaderComponent,
+    FooterComponent,
+    SidebarComponent,
+  ],
+  imports: [
+    CommonModule,
+  ],
+  exports: [
+    HeaderComponent,
+    FooterComponent,
+    SidebarComponent,
+  ]
+3.Zamenio <header> sa <app-header> itd... footer i sidebar.
+
+Izmenio he default.Html kad kucas automacki ce da ti imoprtuje sto treba.
+<mat-drawer-container>
+  <mat-drawer mode="side" opened>
+    <app-sidebar></app-sidebar>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
+
+Uradio je css
+:host{ --> mislim da je ovo za senku
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+mat-drawer {
+  width: 350px;
+}
+
+mat-drawer-container{
+  height: 100%;
+}
+
+Sad je uradio header componentu
+<mat-divider></mat-divider>
+<footer>
+  &copy: All rights  reserved 2020
+</footer>
+I dodao je sitno css.
+
+Header comp je uradio:
+Sve je uzeo sa sajta angular-material ..isto kao sto ionic ima svoje.
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-icon-button>
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span> APP LOGO </span>
+    <div fxFlex fxLayout="row" fxLayoutAlign="flex-end">
+      <ul fxLayout="row" fxLayoutGap="20px">
+        <li>
+          <button mat-icon-button>
+            <mat-icon>settings</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button mat-icon-button>
+            <mat-icon>help_outline</mat-icon>
+          </button>
+        </li>
+        <li>
+          <button mat-button [matMenuTriggerFor]="menu">
+            <mat-icon>person_outline</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>exit_to_app</mat-icon>
+              Sign out
+            </button>
+          </mat-menu>
+        </li>
+      </ul>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+Zatim je uradio dashboard:
+<div>
+  Line charts
+</div>
+
+<mat-divider></mat-divider>
+
+<div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+
+<mat-divider></mat-divider>
+
+<div>
+  <div>Table</div>
+  <div>Pie Chart</div>
+</div>
+
+I naravno u default.module jer je tu ta komponenta je addovao
+MatDividerModule
+
+Zatim je uradio sidebar naravno i css..
+<mat-nav-list>
+  <div class="profile-card">
+    <div class="header">
+      <h2>Zarija Gavrilovic</h2>
+      <h4>zarijagavrilovic@gmail.com</h4>
+    </div>
+    <img src='https://csgoprosmurfs.com/wp-content/uploads/2018/02/ge-2-1.png' alt="My profile picture">
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <h2 matSubheader>Pages</h2>
+
+  <a mat-list-item routerLinkActive="list-item-active" routerLink="/">Dashboard</a>
+  <a mat-list-item routerLinkActive="list-item-active" routerLink="/posts">Posts</a>
+  <a mat-list-item routerLinkActive="list-item-active" routerLink="/articles">Articles</a>
+
+  <mat-divider></mat-divider>
+
+  <h2 matSubheader>Tools</h2>
+  <a mat-list-item routerLinkActive="list-item-active" routerLink="/contacts">
+    <mat-icon>import_contacts</mat-icon>
+    Contacts
+  </a>
+  <a mat-list-item routerLinkActive="list-item-active" routerLink="/contacts">
+    <mat-icon>contact_phone</mat-icon>
+    Leads
+  </a>
+</mat-nav-list>
+
+Zatim je u
+default.ts dodao varijblu
+sideBarOpen = false;
+i default.html
+stara linija:
+  <mat-drawer mode="side" opened>
+na ovo:
+  <mat-drawer mode="side" [opened]="sideBarOpen">
+
+I sad je u kom header
+ts file: --> ona ce na klik da emituje event koji ce da hvata u default. Ovako ga je nazvao:toggleSideBarForMe
+@Output() toggleSideBarForMe: EventEmitter<any> = new EventEmitter<any>();
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+  toggleSidebar(){
+    this.toggleSideBarForMe.emit();
+  }
+
+HTML stari od header com
+<button mat-icon-button>
+novi
+<button mat-icon-button (click)="toggleSidebar()">
+
+Sad je u komponenti default.html:
+<app-header (toggleSideBarForMe)="sideBarToggler($event)"></app-header>
+I u default.ts:
+sideBarOpen = true;
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+  sideBarToggler() {
+    this.sideBarOpen = !this.sideBarOpen;
+  }
+
+Sad ce da pocne da radi sa shartovima
+ng g c shared/widgets
+
+SAJT ZA CHARTOVE
+https://www.highcharts.com/demo
+Uzeo je ovaj
+https://www.highcharts.com/demo/area-stacked
+
+Kreirao je komponentu
+ng g c shared/widgets/area
+Nakon toga je u shared.module.ts
+Deklarisao tu komponentu i exspotovao je.
+U area.ts je promenio naziv selektora
+app-widget-area. i dodao ha na dashboard.
+
+Zatim je u shared.module.ts
+importovao HighchartsChartModule
+
+U area.ts
+import * as Highcharts from 'highcharts';
+A u area.html
+<highcharts-charts
+  [Highcharts]="Highcharts"
+  [callbackFunction]="chartCallback"
+  style="widgt: 100%; height: 400px; display: block";
+>
+</highcharts-charts>
+
+Onda je sa sajta prekopirao deo koda u area.ts:
+On je bisao i dodavao neke stvari.
+Kao i dole funkciju setTimeout().
+A zatim ga je exporotvao. I dodao liniju koda iznad setTimeout.
+
+
+import {Component, OnInit} from '@angular/core';
+import * as Highcharts from 'highcharts';
+import HC_exporting from 'highcharts/modules/exporting';
+HC_exporting(Highcharts);
+
+@Component({
+  selector: 'app-widget-area',
+  templateUrl: './area.component.html',
+  styleUrls: ['./area.component.scss']
+})
+export class AreaComponent implements OnInit {
+
+
+  chartOptions: {};
+  Highcharts = Highcharts;
+
+  constructor() {
+  }
+
+  ngOnInit() {
+    this.chartOptions = {
+      chart: {
+        type: 'area'
+      },
+      title: {
+        text: 'Historic and Estimated Worldwide Population Growth by Region'
+      },
+      subtitle: {
+        text: 'Source: Wikipedia.org'
+      },
+      tooltip: {
+        split: true,
+        valueSuffix: ' millions'
+      },
+      credits: {
+        enable: false,
+      },
+      expoting: {
+        enable: true,
+      },
+      series: [{
+        name: 'Asia',
+        data: [502, 635, 809, 947, 1402, 3634, 5268]
+      }, {
+        name: 'Africa',
+        data: [106, 107, 111, 133, 221, 767, 1766]
+      }, {
+        name: 'Europe',
+        data: [163, 203, 276, 408, 547, 729, 628]
+      }, {
+        name: 'America',
+        data: [18, 31, 54, 156, 339, 818, 1201]
+      }, {
+        name: 'Oceania',
+        data: [2, 2, 2, 6, 13, 30, 46]
+      }]
+    };
+
+    HC_exporting(Highcharts);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('resize')
+      );
+    },300);
+  }
+
+}
+
+U dashboard je izmenio:
+<div>
+  <app-widget-area></app-widget-area>
+</div>
+<br>
+<mat-divider></mat-divider>
+<br>
+
+<div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="20px" class="stats-cards">
+  <mat-card fxFlex="25">
+    stats
+  </mat-card>
+  <mat-card fxFlex="25">
+    stats
+  </mat-card>
+  <mat-card fxFlex="25">
+    stats
+  </mat-card>
+</div>
+
+<mat-divider></mat-divider>
+
+<div>
+  <div>Table</div>
+  <div>Pie Chart</div>
+</div>
+i u defualt.module.ts jer on odgovara za dashboard (tamo je registovana komp)
+je dodao u imports:
+  ...
+    FlexModule,
+    FlexLayoutModule,
+    MatCardModule
+  ...
+
+Sad ce da radi male grafove na dashboardu
+Pravice ih u karticama
+ng g c shared/widgets/card
+U card.ts promenio je selektor
+'app-widget-card'
+
+Sada je u dashboard
+Tamo gde je pisalo stats u htmlu
+zamenio sa
+<app-widget-card></app-widget-card>
+I naravno deklarisao je card.ts i eksportovao je.
+
+
+Sad je u karticu card.html
+prekopirao sve iz area.html
+i u kartiuc card.ts sve iz area.ts
+
+I uradio par izmena u html i ts
+html:
+<div class="text">
+  <h4>{{label}}</h4>
+  <span class="total">{{total}}</span>
+  <span>
+    <mat-icon>trending_up</mat-icon>
+  </span>
+  <span class="description">
+    {{percentage}}%
+  </span>
+  <span> of target</span>
+</div>
+
+<div class="widget">
+  <highcharts-chart [Highcharts]="Highcharts"  [options]="chartOptions"
+                    style="width: 100%; height: 60px; display: block;">
+  </highcharts-chart>
+</div>
+
+ts: Ali ce doraditi jos ovo je presek:
+import { Component, OnInit } from '@angular/core';
+import * as Highcharts from 'highcharts';
+import HC_exporting from 'highcharts/modules/exporting';
+HC_exporting(Highcharts);
+
+@Component({
+  selector: 'app-widget-card',
+  templateUrl: './card.component.html',
+  styleUrls: ['./card.component.scss']
+})
+export class CardComponent implements OnInit {
+
+  Highcharts = Highcharts;
+  chartOptions = {}
+
+  constructor() { }
+
+  ngOnInit() {
+    this.chartOptions = {
+      chart: {
+        type: 'area',
+        backgroundColor: null,
+        borderWidth: 0,
+        margin: [2,2,2,2],
+        height: 60
+      },
+      title: {
+        text: null
+      },
+      subtitle: {
+        text: null
+      },
+      tooltip: {//kad naslonis na tackicu tekst
+        split: true,//da kad naslonis na 1 pokaze za sve te pod tom vrednoscu (sve vertikanlne)
+        outside: true
+      },
+      legend: {//one tackice dole.
+        enabled: false,
+      },
+      credits: {//nzm
+        enabled: false,
+      },
+      exporting: {//menu bar za eksportovanje.
+        enabled: false,
+      },
+      xAxis: {//ovo je valjda za x osu
+        labels: {
+          enabled:false
+        },
+        title: {
+          text: null
+        },
+        startOnTick: false,
+        endOnTick: false,
+        tickOptions: []
+      },
+      yAxis: {//ovo je valjda za y osu
+        labels: {
+          enabled:false
+        },
+        title: {
+          text: null
+        },
+        startOnTick: false,
+        endOnTick: false,
+        tickOptions: []
+      },
+      series: [{
+        data: [10, 35, 100, 346, 200, 100, 50]
+      }]
+    };
+
+    HC_exporting(Highcharts);
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('resize')
+      );
+    },300);
+  }
+}
+
+zatim je dodao ovo
+  @Input() label: string;
+  @Input() total: string;
+  @Input() percentage: string;
+
+Iznad ovoga:
+  Highcharts = Highcharts;
+  chartOptions = {}
+
+Znaci sad komponenta card ocekue ta 3 inputa.
+Zato odes tamo gde je pozvana a to je u dashboard i das mu ta 3 inputa
+    <app-widget-card label="Users" total="10k" percentage="50"></app-widget-card>
+
+
+dodao je css za card.css
+h4{
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.total{
+  font-size: 3em;
+
+}
+
+.mat-icon,
+.description {
+  color: green;
+  font-size: 2em;
+}
+
+.mat-icon {
+  position: relative;
+  padding: 0 20px;
+  top: 5px;
+}
+
+Sada na zatvranje menu bara on treba da obnovi ceo window
+Tj da resizuje sve. Komponete jesu resize i grafovi ali
+ako ti menjas velicinu widnows ako ga povecavas i smanjujes
+Ali on ne registruje promenu zbg sidebara.
+Zato u header jer je tu button za sidebar dajemo da
+on opet renderuje windows na promenu
+ toggleSidebar(){
+    this.toggleSideBarForMe.emit();
+    setTimeout(() => {
+      window.dispatchEvent(
+        new Event('resize')
+      );
+    },300);
+  }
+
+
+stao na 50:40 on dalje se bavi pie chartovima sto me ne interesuje
+Posle pie stavio je i jednu tabelu.
+
+https://www.youtube.com/watch?v=FP7Hs8lTy1k&t=252s
+https://material.angular.io/components/list/overview
+
+FULL MATERIAL COURSE:
+https://www.youtube.com/watch?v=jUfEn032IL8&t=716s
+
+FLEX LAYOUT:
+https://tburleson-layouts-demos.firebaseapp.com/#/docs
